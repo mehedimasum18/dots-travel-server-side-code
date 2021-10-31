@@ -29,11 +29,11 @@ async function run() {
       
       // // This is get api part 
       
-      // app.get('/users', async (req, res) => {
-      //   const cursor = userCollection.find({})
-      //   const users = await cursor.toArray();
-      //   res.send(users);
-      // });
+      app.get('/users', async (req, res) => {
+        const cursor = userCollection.find({})
+        const users = await cursor.toArray();
+        res.send(users);
+      });
       
       app.get('/most_visit', async (req, res) => {
         const cursor = visitCollection.find({});
