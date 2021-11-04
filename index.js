@@ -21,66 +21,83 @@ console.log(uri);
 async function run() {
     
     try {
-        await client.connect();
+      await client.connect();
       // console.log("database connected");
       const database = client.db("dots_travel");
-      const userCollection=database.collection("users")
-      const visitCollection=database.collection("most_visit")
-      
-      // // This is get api part 
-      
-      app.get('/users', async (req, res) => {
-        const cursor = userCollection.find({})
+      const userCollection = database.collection("users");
+      const visitCollection = database.collection("most_visit");
+      const orderCollection = database.collection("booking_order");
+
+      // // This is get api part
+
+      app.get("/users", async (req, res) => {
+        const cursor = userCollection.find({});
         const users = await cursor.toArray();
         res.send(users);
       });
-      
-      app.get('/most_visit', async (req, res) => {
+
+      app.get("/most_visit", async (req, res) => {
         const cursor = visitCollection.find({});
         const users = await cursor.toArray();
         res.send(users);
       });
       
-      // // This is post api part 
+      app.get("/bookingOrder", async (req, res) => {
+        
+        const result = await orderCollection.find({}).toArray();
+        res.json(result)
+      })
       
+      app.post('/manageOrder', async (req, res) => {
+        const cursor = req.body;
+        const result = await orderCollection.insertOne(cursor);
+        res.json(result);
+      })
+
+      // This is post api part
+
       // app.post('/users', async (req, res) => {
       //   const newUser = req.body;
       //   const result = await usersCollection.insertOne(newUser);
       //   res.json(result);
       // });
       
+      // This is order post pai 
       
-      // //This is update api part 
+      app.post("/bookingOrder", async (req, res) => {
+        const cursor = req.body;
+        const result = await orderCollection.insertOne(cursor);
+        res.json(result);
+      });
       
-      // app.put("/users/:id", async (req, res) => {
-        
-      //   const id = req.params.id;
-      //   const updateUser = req.body;
-      //   const filter = { _id: ObjectId(id) };
-      //   const options = { upsert: true };
-      //   const updateDoc={
-      //     $set: {
-      //       name: updateUser.name,
-      //       email: updateUser.email,
-      //       phone: updateUser.phone,
-      //       address: updateUser.address
-            
-      //     }
-      //   }
-      //   const result = await usersCollection.updateOne(filter, updateDoc, options)
-      //   res.json(result)
-        
-      // })
-      
-      // // This is delete api 
-      
-      // app.delete('/users/:id', async (req, res) => {
-      //   const id = req.params.id;
-      //   const query ={_id: ObjectId(id)}
-      //   const result = await usersCollection.deleteOne(query);
-      //   res.json(result)
-      // })
-      
+
+      // //This is update  post api part
+
+      app.put("/users/:id", async (req, res) => {
+
+        const id = req.params.id;
+        const updateUser = req.body;
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        const updateStatus={
+          $set: {
+            status:"Approved"
+
+          }
+        }
+        const result = await usersCollection.updateOne(filter, updateStatus, options);
+        res.json(result)
+
+      })
+
+      // //  Delete post API
+
+      app.delete("/users/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await usersCollection.deleteOne(query);
+        res.json(result);
+      });
     }
     finally {
         // await client.close();
