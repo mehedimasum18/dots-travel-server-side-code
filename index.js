@@ -56,11 +56,11 @@ async function run() {
 
       // This is post api part
 
-      // app.post('/users', async (req, res) => {
-      //   const newUser = req.body;
-      //   const result = await usersCollection.insertOne(newUser);
-      //   res.json(result);
-      // });
+      app.post('/users', async (req, res) => {
+        const newUser = req.body;
+        const result = await userCollection.insertOne(newUser);
+        res.json(result);
+      });
       
       // This is order post pai 
       
